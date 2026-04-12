@@ -10,5 +10,6 @@
 /.idea/*
 app/release/*
 steps.txt
+Function3DAnimator
 *.docx
 *.tmp
