@@ -36,8 +36,7 @@
     <string name="help2">The application plots any 3D-surface or multiple surfaces on the same graph.
                     The surface can be time-dependent. Zooming is supported. \n</string>
     <string name="help3">Supported operators</string>
-    <string name="help4">\n Add +\n Subtract -\n Multiply *\n Divide /\n Power ^\n
-                    Modulus %\n Factorial !\n</string>
+    <string name="help4">\n Add +\n Subtract -\n Multiply *\n Divide /\n Power ^\n</string>
     <string name="help5">Available functions</string>
     <string name="help6">Functions can be typed by pressing the \'func\' button on the custom keyboard.
                     If you are not using our custom keyboard, you can type them like in the examples below.
