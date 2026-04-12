@@ -74,28 +74,28 @@ private fun MainKeyboard(
 ) {
     val rows = listOf(
         listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0"),
-        listOf("+", "-", "*", "/", "^", "a", "b", "c", "d",
+        listOf("+", "-", "*", "/",  "^", ".",
             when (type) {
                 FunctionDefinitionType.defaultType -> "x"
                 FunctionDefinitionType.elliptical -> "r"
-                FunctionDefinitionType.spherical -> "П†"
+                FunctionDefinitionType.spherical -> "φ"
                 FunctionDefinitionType.parametric -> "u"
             },
             when (type) {
                 FunctionDefinitionType.defaultType -> "y"
-                FunctionDefinitionType.elliptical -> "П†"
-                FunctionDefinitionType.spherical -> "Оё"
+                FunctionDefinitionType.elliptical -> "φ"
+                FunctionDefinitionType.spherical -> "θ"
                 FunctionDefinitionType.parametric -> "v"
             }
         ),
-        listOf("t", "(", ")", "Func", "CLR", "вЊ«")
+        listOf("t", "(", ")", "Func", "CLR", "⌫")
     )
 
     KeyboardGrid(
         rows = rows,
         onKey = {
             when (it) {
-                "вЊ«" -> onDelete()
+                "⌫" -> onDelete()
                 "CLR" -> onClear()
                 "Func" -> onFunc()
                 else -> onKey(it)
@@ -114,14 +114,14 @@ private fun FunctionKeyboard(
     val rows = listOf(
         listOf("sin", "cos", "tg", "ctg", "exp", "sqrt", "(", ")"),
         listOf("abs", "log", "ln", "asin", "acos", "atg", "sh", "ch"),
-        listOf("back", "вЊ«", "CLR")
+        listOf("back", "⌫", "CLR")
     )
 
     KeyboardGrid(
         rows = rows,
         onKey = {
             when (it) {
-                "вЊ«" -> onDelete()
+                "⌫" -> onDelete()
                 "CLR" -> onClear()
                 "back" -> onBack()
                 else -> onKey(it + if (it != "(" && it != ")") "(" else "") // functions auto-open
@@ -165,7 +165,7 @@ private fun KeyboardKey(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val isAction = label in listOf("вЊ«", "CLR", "Func", "back")
+    val isAction = label in listOf("⌫", "CLR", "Func", "back")
 
     Surface(
         modifier = modifier
@@ -193,7 +193,7 @@ private fun KeyboardKey(
 }
 
 @Preview(
-    name = "Math Keyboard вЂ“ Light",
+    name = "Math Keyboard - Light",
     showBackground = true,
     backgroundColor = 0xFFF2F2F2,
     widthDp = 411

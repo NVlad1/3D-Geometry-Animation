@@ -20,7 +20,7 @@ internal class Parser(val str: String, val type: FunctionDefinitionType) {
     private val functionsMap = mapOf("sqrt" to FunctionType.sqrt, "exp" to FunctionType.exp, "sin" to FunctionType.sin,
             "cos" to FunctionType.cos, "tg" to FunctionType.tg, "ctg" to FunctionType.ctg, "abs" to FunctionType.abs,
             "log" to FunctionType.log, "ln" to FunctionType.ln, "asin" to FunctionType.asin, "acos" to FunctionType.acos,
-            "atan" to FunctionType.atan, "sh" to FunctionType.sh, "ch" to FunctionType.ch)
+            "atg" to FunctionType.atg, "sh" to FunctionType.sh, "ch" to FunctionType.ch)
     private val bracketMap = mapOf('(' to BracketType.left, ')' to BracketType.right)
     val numberParamsMap = HashMap<Int, Double>()
     val variableParamIDs: Map<String, Int>

@@ -61,8 +61,6 @@ Operators:
 - `*`
 - `/`
 - `^`
-- `%`
-- `!`
 
 Functions:
 
@@ -77,7 +75,7 @@ Functions:
 - `ln`
 - `asin`
 - `acos`
-- `atan`
+- `atg`
 - `sh`
 - `ch`
 
