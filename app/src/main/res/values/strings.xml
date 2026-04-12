@@ -44,7 +44,7 @@
                     sqrt(): square root\n exp(): exponent\n sin(): sinus\n
                     cos(): cosinus\n tg(): tangent\n ctg(): cotangent\n abs(): absolute value\n
                     log(): logarithm decimal\n ln(): logarithm natural\n asin(): arcsinus\n
-                    acos(): arccosinus\n atan(): arctangent\n sh(): hyperbolic sinus\n
+                    acos(): arccosinus\n atg(): arctangent\n sh(): hyperbolic sinus\n
                     ch(): hyperbolic cosinus\n </string>
     <string name="help7">Credits</string>
     <string name="help8">
