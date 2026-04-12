@@ -20,6 +20,18 @@ ksp {
 android {
     namespace = "io.github.nvlad1.function3danimator"
     compileSdk = 36
+
+    val releaseKeystorePath = System.getenv("KEYSTORE_PATH_3D_GEOMETRY_ANIMATION")
+    val releaseStorePassword = System.getenv("KEYSTORE_PASSWORD")
+    val releaseKeyAlias = System.getenv("KEY_ALIAS")
+    val releaseKeyPassword = System.getenv("KEY_PASSWORD")
+    val hasReleaseSigning = listOf(
+        releaseKeystorePath,
+        releaseStorePassword,
+        releaseKeyAlias,
+        releaseKeyPassword
+    ).all { !it.isNullOrBlank() }
+
     defaultConfig {
         applicationId = "io.github.nvlad1.function3danimator"
         minSdk = 26
@@ -28,6 +40,18 @@ android {
         versionName = "1.4.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = file(releaseKeystorePath!!)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         debug {
             isMinifyEnabled = false
@@ -38,6 +62,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = if (hasReleaseSigning) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 
