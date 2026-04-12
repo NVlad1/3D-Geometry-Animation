@@ -1,0 +1,5 @@
+Initial F-Droid release.
+
+- Create and animate Cartesian, elliptical, spherical, and parametric surfaces
+- Store user-defined functions locally
+- Use built-in example scenes and a custom math keyboard

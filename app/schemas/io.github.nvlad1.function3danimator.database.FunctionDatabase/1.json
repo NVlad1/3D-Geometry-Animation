@@ -1,0 +1,98 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "e4bfc1de48dda99b62df7fed37dd28e6",
+    "entities": [
+      {
+        "tableName": "functions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `xmin` REAL NOT NULL, `xmax` REAL NOT NULL, `ymin` REAL NOT NULL, `ymax` REAL NOT NULL, `string` TEXT, `strX` TEXT, `strY` TEXT, `strZ` TEXT, `type` TEXT NOT NULL, `timeMeasurementMode` TEXT NOT NULL, `color` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "xmin",
+            "columnName": "xmin",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "xmax",
+            "columnName": "xmax",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ymin",
+            "columnName": "ymin",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ymax",
+            "columnName": "ymax",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "string",
+            "columnName": "string",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "strX",
+            "columnName": "strX",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "strY",
+            "columnName": "strY",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "strZ",
+            "columnName": "strZ",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeMeasurementMode",
+            "columnName": "timeMeasurementMode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e4bfc1de48dda99b62df7fed37dd28e6')"
+    ]
+  }
+}
