@@ -113,7 +113,7 @@ dispatchers:
 
 - Custom parser in `calculationModel/` package
 - Supports operators: `+`, `-`, `*`, `/`, `^`, `%`, `!`
-- Math functions: `sqrt`, `sin`, `cos`, `exp`, `log`, `abs`, `asin`, `acos`, `atan`, `sh`, `ch`,
+- Math functions: `sqrt`, `sin`, `cos`, `exp`, `log`, `abs`, `asin`, `acos`, `atg`, `sh`, `ch`,
   `tg`, `ctg`
 - Variables depend on function type: `x, y, t` (Cartesian), `r, phi, t` (elliptical),
   `theta, phi, t` (spherical), `u, v, t` (parametric)

@@ -101,7 +101,7 @@ class Calculator private constructor(_data: Array<Float?>, _commands : Array<Com
                 FunctionType.ln -> Command(a, null, OperationType.CMD_LN)
                 FunctionType.asin -> Command(a, null, OperationType.CMD_ASIN)
                 FunctionType.acos -> Command(a, null, OperationType.CMD_ACOS)
-                FunctionType.atan -> Command(a, null, OperationType.CMD_ATAN)
+                FunctionType.atg -> Command(a, null, OperationType.CMD_ATAN)
                 FunctionType.abs -> Command(a, null, OperationType.CMD_ABS)
                 FunctionType.sh -> Command(a, null, OperationType.CMD_SH)
                 FunctionType.ch -> Command(a, null, OperationType.CMD_CH)
