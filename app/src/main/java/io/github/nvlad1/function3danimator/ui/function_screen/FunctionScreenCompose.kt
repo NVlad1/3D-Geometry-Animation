@@ -27,13 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.FocusState
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.InterceptPlatformTextInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -55,6 +54,13 @@ import io.github.nvlad1.function3danimator.model.calculationModel.enums.TimeUnit
 import io.github.nvlad1.function3danimator.ui.utils.UnderlineTextField
 import kotlinx.coroutines.awaitCancellation
 
+private enum class FunctionInputField {
+    Main,
+    X,
+    Y,
+    Z
+}
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun FunctionScreen(
@@ -67,7 +73,7 @@ fun FunctionScreen(
     var showTimeMeasurementModeDialog by rememberSaveable { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
-    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
     var functionStrX by remember {
         mutableStateOf(TextFieldValue(function.strX ?: ""))
     }
@@ -80,13 +86,39 @@ fun FunctionScreen(
     var functionStr by remember {
         mutableStateOf(TextFieldValue(function.string ?: ""))
     }
-    var isTextFieldFocused by remember { mutableStateOf(false) }
-    var isTextFieldXFocused by remember { mutableStateOf(false) }
-    var isTextFieldYFocused by remember { mutableStateOf(false) }
-    var isTextFieldZFocused by remember { mutableStateOf(false) }
+    var focusedField by rememberSaveable { mutableStateOf<FunctionInputField?>(null) }
+
+    fun updateFocusedField(field: FunctionInputField, focusState: FocusState) {
+        if (focusState.isFocused) {
+            focusedField = field
+        } else if (focusedField == field) {
+            focusedField = null
+        }
+    }
+
+    fun updateFocusedTextField(update: (TextFieldValue) -> TextFieldValue) {
+        when (focusedField) {
+            FunctionInputField.Main -> {
+                functionStr = update(functionStr)
+                viewModel.setFunctionStr(functionStr.text)
+            }
+            FunctionInputField.X -> {
+                functionStrX = update(functionStrX)
+                viewModel.setFunctionStrX(functionStrX.text)
+            }
+            FunctionInputField.Y -> {
+                functionStrY = update(functionStrY)
+                viewModel.setFunctionStrY(functionStrY.text)
+            }
+            FunctionInputField.Z -> {
+                functionStrZ = update(functionStrZ)
+                viewModel.setFunctionStrZ(functionStrZ.text)
+            }
+            null -> Unit
+        }
+    }
 
     LaunchedEffect(Unit) {
-        //focusRequester.requestFocus()
         // Refresh keyboard setting in case it was changed in settings
         viewModel.updateKeyboardSettingFromPreference()
     }
@@ -104,9 +136,11 @@ fun FunctionScreen(
             .padding(horizontal = 16.dp)
             .fillMaxSize()
     ) {
-        Column(modifier = Modifier
-            .weight(1f)
-            .verticalScroll(scrollState)) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(scrollState)
+        ) {
             SettingsElement(
                 title = stringResource(R.string.type),
                 value = function.type.description
@@ -126,21 +160,11 @@ fun FunctionScreen(
                 functionStrX = functionStrX,
                 functionStrY = functionStrY,
                 functionStrZ = functionStrZ,
-                focusRequester = focusRequester,
-                isTextFieldFocused = isTextFieldFocused,
-                isTextFieldXFocused = isTextFieldXFocused,
-                isTextFieldYFocused = isTextFieldYFocused,
-                isTextFieldZFocused = isTextFieldZFocused,
                 onFunctionStrChange = { functionStr = it; viewModel.setFunctionStr(it.text) },
                 onFunctionStrXChange = { functionStrX = it; viewModel.setFunctionStrX(it.text) },
                 onFunctionStrYChange = { functionStrY = it; viewModel.setFunctionStrY(it.text) },
                 onFunctionStrZChange = { functionStrZ = it; viewModel.setFunctionStrZ(it.text) },
-                onFocusChanged = { x, y, z, main ->
-                    isTextFieldXFocused = x
-                    isTextFieldYFocused = y
-                    isTextFieldZFocused = z
-                    isTextFieldFocused = main
-                }
+                onFocusChanged = ::updateFocusedField
             )
             FunctionBordersField(
                 function = function,
@@ -153,54 +177,18 @@ fun FunctionScreen(
                 viewModel.setColor(it)
             }
         }
-        if (isCustomKeyboardEnabled && (isTextFieldFocused || isTextFieldXFocused || isTextFieldYFocused || isTextFieldZFocused)) {
+        if (isCustomKeyboardEnabled && focusedField != null) {
             MathKeyboard(
                 modifier = Modifier.fillMaxWidth(),
                 type = function.type,
                 onKey = {
-                    if (isTextFieldFocused) {
-                        functionStr = insertText(functionStr, it)
-                        viewModel.setFunctionStr(functionStr.text)
-                    } else if (isTextFieldXFocused) {
-                        functionStrX = insertText(functionStrX, it)
-                        viewModel.setFunctionStrX(functionStrX.text)
-                    } else if (isTextFieldYFocused) {
-                        functionStrY = insertText(functionStrY, it)
-                        viewModel.setFunctionStrY(functionStrY.text)
-                    } else if (isTextFieldZFocused) {
-                        functionStrZ = insertText(functionStrZ, it)
-                        viewModel.setFunctionStrZ(functionStrZ.text)
-                    }
+                    updateFocusedTextField { value -> insertText(value, it) }
                 },
                 onDelete = {
-                    if (isTextFieldFocused) {
-                        functionStr = deleteText(functionStr)
-                        viewModel.setFunctionStr(functionStr.text)
-                    } else if (isTextFieldXFocused) {
-                        functionStrX = deleteText(functionStrX)
-                        viewModel.setFunctionStrX(functionStrX.text)
-                    } else if (isTextFieldYFocused) {
-                        functionStrY = deleteText(functionStrY)
-                        viewModel.setFunctionStrY(functionStrY.text)
-                    } else if (isTextFieldZFocused) {
-                        functionStrZ = deleteText(functionStrZ)
-                        viewModel.setFunctionStrZ(functionStrZ.text)
-                    }
+                    updateFocusedTextField(::deleteText)
                 },
                 onClear = {
-                    if (isTextFieldFocused) {
-                        functionStr = TextFieldValue("")
-                        viewModel.setFunctionStr(functionStr.text)
-                    } else if (isTextFieldXFocused) {
-                        functionStrX = TextFieldValue("")
-                        viewModel.setFunctionStrX(functionStrX.text)
-                    } else if (isTextFieldYFocused) {
-                        functionStrY = TextFieldValue("")
-                        viewModel.setFunctionStrY(functionStrY.text)
-                    } else if (isTextFieldZFocused) {
-                        functionStrZ = TextFieldValue("")
-                        viewModel.setFunctionStrZ(functionStrZ.text)
-                    }
+                    updateFocusedTextField { TextFieldValue("") }
                 }
             )
         }
@@ -212,6 +200,8 @@ fun FunctionScreen(
             options = FunctionDefinitionType.entries.map { it.description },
             selectedOption = function.type.description,
             onOptionSelected = {
+                focusManager.clearFocus(force = true)
+                focusedField = null
                 viewModel.setFunctionType(it)
                 showFunctionTypeDialog = false
             },
@@ -269,16 +259,11 @@ private fun RenderTextFieldsWithKeyboardControl(
     functionStrX: TextFieldValue,
     functionStrY: TextFieldValue,
     functionStrZ: TextFieldValue,
-    focusRequester: FocusRequester,
-    isTextFieldFocused: Boolean,
-    isTextFieldXFocused: Boolean,
-    isTextFieldYFocused: Boolean,
-    isTextFieldZFocused: Boolean,
     onFunctionStrChange: (TextFieldValue) -> Unit,
     onFunctionStrXChange: (TextFieldValue) -> Unit,
     onFunctionStrYChange: (TextFieldValue) -> Unit,
     onFunctionStrZChange: (TextFieldValue) -> Unit,
-    onFocusChanged: (Boolean, Boolean, Boolean, Boolean) -> Unit
+    onFocusChanged: (FunctionInputField, FocusState) -> Unit
 ) {
     ConditionalInterceptPlatformTextInput(isCustomKeyboardEnabled) {
         RenderTextFields(
@@ -287,11 +272,6 @@ private fun RenderTextFieldsWithKeyboardControl(
             functionStrX = functionStrX,
             functionStrY = functionStrY,
             functionStrZ = functionStrZ,
-            focusRequester = focusRequester,
-            isTextFieldFocused = isTextFieldFocused,
-            isTextFieldXFocused = isTextFieldXFocused,
-            isTextFieldYFocused = isTextFieldYFocused,
-            isTextFieldZFocused = isTextFieldZFocused,
             onFunctionStrChange = onFunctionStrChange,
             onFunctionStrXChange = onFunctionStrXChange,
             onFunctionStrYChange = onFunctionStrYChange,
@@ -330,58 +310,41 @@ private fun RenderTextFields(
     functionStrX: TextFieldValue,
     functionStrY: TextFieldValue,
     functionStrZ: TextFieldValue,
-    focusRequester: FocusRequester,
-    isTextFieldFocused: Boolean,
-    isTextFieldXFocused: Boolean,
-    isTextFieldYFocused: Boolean,
-    isTextFieldZFocused: Boolean,
     onFunctionStrChange: (TextFieldValue) -> Unit,
     onFunctionStrXChange: (TextFieldValue) -> Unit,
     onFunctionStrYChange: (TextFieldValue) -> Unit,
     onFunctionStrZChange: (TextFieldValue) -> Unit,
-    onFocusChanged: (Boolean, Boolean, Boolean, Boolean) -> Unit,
+    onFocusChanged: (FunctionInputField, FocusState) -> Unit,
     isCustomKeyboardEnabled: Boolean = true
 ) {
     if (function.type == FunctionDefinitionType.parametric) {
         FunctionField(
             prefixText = function.type.getTextFieldPrefix("x"),
             functionStr = functionStrX,
-            focusRequester = focusRequester,
             onValueChange = onFunctionStrXChange,
-            onFocusChanged = { focusState ->
-                onFocusChanged(focusState.isFocused, isTextFieldYFocused, isTextFieldZFocused, isTextFieldFocused)
-            },
+            onFocusChanged = { onFocusChanged(FunctionInputField.X, it) },
             isCustomKeyboardEnabled = isCustomKeyboardEnabled
         )
         FunctionField(
             prefixText = function.type.getTextFieldPrefix("y"),
             functionStr = functionStrY,
-            focusRequester = focusRequester,
             onValueChange = onFunctionStrYChange,
-            onFocusChanged = { focusState ->
-                onFocusChanged(isTextFieldXFocused, focusState.isFocused, isTextFieldZFocused, isTextFieldFocused)
-            },
+            onFocusChanged = { onFocusChanged(FunctionInputField.Y, it) },
             isCustomKeyboardEnabled = isCustomKeyboardEnabled
         )
         FunctionField(
             prefixText = function.type.getTextFieldPrefix("z"),
             functionStr = functionStrZ,
-            focusRequester = focusRequester,
             onValueChange = onFunctionStrZChange,
-            onFocusChanged = { focusState ->
-                onFocusChanged(isTextFieldXFocused, isTextFieldYFocused, focusState.isFocused, isTextFieldFocused)
-            },
+            onFocusChanged = { onFocusChanged(FunctionInputField.Z, it) },
             isCustomKeyboardEnabled = isCustomKeyboardEnabled
         )
     } else {
         FunctionField(
             prefixText = function.type.getTextFieldPrefix(),
             functionStr = functionStr,
-            focusRequester = focusRequester,
             onValueChange = onFunctionStrChange,
-            onFocusChanged = { focusState ->
-                onFocusChanged(isTextFieldXFocused, isTextFieldYFocused, isTextFieldZFocused, focusState.isFocused)
-            },
+            onFocusChanged = { onFocusChanged(FunctionInputField.Main, it) },
             isCustomKeyboardEnabled = isCustomKeyboardEnabled
         )
     }
@@ -391,14 +354,15 @@ private fun RenderTextFields(
 private fun FunctionField(
     prefixText: String,
     functionStr: TextFieldValue,
-    focusRequester: FocusRequester,
     onValueChange: (TextFieldValue) -> Unit,
     onFocusChanged: (FocusState) -> Unit,
     isCustomKeyboardEnabled: Boolean = true
 ) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 12.dp)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp)
+    ) {
         Text(
             modifier = Modifier.align(Alignment.CenterVertically),
             text = prefixText
@@ -410,7 +374,6 @@ private fun FunctionField(
             singleLine = true,
             modifier = if (isCustomKeyboardEnabled) {
                 Modifier
-                    .focusRequester(focusRequester)
                     .onFocusChanged { onFocusChanged.invoke(it) }
             } else {
                 Modifier
@@ -477,10 +440,22 @@ private fun FunctionBordersField(
         FunctionDefinitionType.spherical -> "θ" to "φ"
         FunctionDefinitionType.parametric -> "u" to "v"
     }
-    var xminText by rememberSaveable(function.id, function.type) { mutableStateOf(function.xmin.toString()) }
-    var xmaxText by rememberSaveable(function.id, function.type) { mutableStateOf(function.xmax.toString()) }
-    var yminText by rememberSaveable(function.id, function.type) { mutableStateOf(function.ymin.toString()) }
-    var ymaxText by rememberSaveable(function.id, function.type) { mutableStateOf(function.ymax.toString()) }
+    var xminText by rememberSaveable(
+        function.id,
+        function.type
+    ) { mutableStateOf(function.xmin.toString()) }
+    var xmaxText by rememberSaveable(
+        function.id,
+        function.type
+    ) { mutableStateOf(function.xmax.toString()) }
+    var yminText by rememberSaveable(
+        function.id,
+        function.type
+    ) { mutableStateOf(function.ymin.toString()) }
+    var ymaxText by rememberSaveable(
+        function.id,
+        function.type
+    ) { mutableStateOf(function.ymax.toString()) }
 
     Column(
         modifier = Modifier

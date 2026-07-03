@@ -202,9 +202,13 @@ private fun AlertDialogMainScreenOrientation(
                 radioButtons.forEach { orientation ->
                     val isSelected = orientation == selectedButton.value
                     val colors = RadioButtonDefaults.colors(
-                        selectedColor = colorResource(id = R.color.colorPrimary),
-                        unselectedColor = colorResource(id = R.color.colorPrimaryDark),
-                        disabledColor = Color.LightGray
+                        selectedColor = MaterialTheme.colors.primary,
+                        unselectedColor = MaterialTheme.colors.onSurface.copy(
+                            alpha = ContentAlpha.medium
+                        ),
+                        disabledColor = MaterialTheme.colors.onSurface.copy(
+                            alpha = ContentAlpha.disabled
+                        )
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         RadioButton(
@@ -299,7 +303,13 @@ private fun GridTextField(value: String, onValueChange: (String) -> Unit){
     TextField(
         modifier = Modifier.width(80.dp),
         colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.White
+            backgroundColor = MaterialTheme.colors.surface,
+            cursorColor = MaterialTheme.colors.primary,
+            focusedIndicatorColor = MaterialTheme.colors.primary,
+            unfocusedIndicatorColor = MaterialTheme.colors.onSurface.copy(
+                alpha = ContentAlpha.medium
+            ),
+            textColor = MaterialTheme.colors.onSurface
         ),
         value = value,
         onValueChange = onValueChange,

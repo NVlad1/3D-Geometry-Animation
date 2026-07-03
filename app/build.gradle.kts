@@ -36,8 +36,8 @@ android {
         applicationId = "io.github.nvlad1.function3danimator"
         minSdk = 26
         targetSdk = 36
-        versionCode = 24
-        versionName = "1.4.0"
+        versionCode = 25
+        versionName = "1.4.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -52,20 +52,34 @@ android {
         }
     }
 
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
     buildTypes {
         debug {
             isMinifyEnabled = false
         }
+
+        create("releaseDebugSigned") {
+            initWith(getByName("release"))
+            isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("debug")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+
         release {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = if (hasReleaseSigning) {
-                signingConfigs.getByName("release")
-            } else {
-                signingConfigs.getByName("debug")
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
             }
         }
     }

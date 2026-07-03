@@ -13,7 +13,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -75,6 +74,8 @@ private fun FunctionCardOrdinary(
     onClickEdit: (() -> Unit)? = null,
     onClickDelete: (() -> Unit)? = null
 ){
+    val functionTextColor = function.color?.colorResId?.let { colorResource(id = it) }
+        ?: MaterialTheme.colors.onSurface
     Card(
         modifier = Modifier.padding(16.dp),
         elevation = 5.dp,
@@ -91,13 +92,14 @@ private fun FunctionCardOrdinary(
                     width = Dimension.fillToConstraints
                 },
                 style = TextStyle(
-                    color = function.color?.colorResId?.let{ colorResource(id = it)} ?: Color.Black,
+                    color = functionTextColor,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                 )
             )
             Icon(imageVector = ImageVector.vectorResource(id = R.drawable.ic_close_black_24dp),
                 contentDescription = stringResource(R.string.delete_function),
+                tint = MaterialTheme.colors.onSurface,
                 modifier = Modifier
                     .constrainAs(removeIcon) {
                         top.linkTo(functionText.bottom, 6.dp)
@@ -110,6 +112,7 @@ private fun FunctionCardOrdinary(
             )
             Icon(imageVector = ImageVector.vectorResource(id = R.drawable.ic_edit_black_24dp),
                 contentDescription = stringResource(R.string.edit_function),
+                tint = MaterialTheme.colors.onSurface,
                 modifier = Modifier
                     .constrainAs(editIcon) {
                         top.linkTo(functionText.bottom, 6.dp)
@@ -131,6 +134,8 @@ private fun FunctionCardParametric(
     onClickEdit: (() -> Unit)? = null,
     onClickDelete: (() -> Unit)? = null
 ){
+    val functionTextColor = function.color?.colorResId?.let { colorResource(id = it) }
+        ?: MaterialTheme.colors.onSurface
     Card(
         modifier = Modifier.padding(16.dp),
         elevation = 5.dp,
@@ -149,8 +154,7 @@ private fun FunctionCardParametric(
                     width = Dimension.fillToConstraints
                 },
                 style = TextStyle(
-                    color = function.color?.colorResId?.let { colorResource(id = it) }
-                        ?: Color.Black,
+                    color = functionTextColor,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                 )
@@ -163,8 +167,7 @@ private fun FunctionCardParametric(
                     width = Dimension.fillToConstraints
                 },
                 style = TextStyle(
-                    color = function.color?.colorResId?.let { colorResource(id = it) }
-                        ?: Color.Black,
+                    color = functionTextColor,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                 )
@@ -177,14 +180,14 @@ private fun FunctionCardParametric(
                     width = Dimension.fillToConstraints
                 },
                 style = TextStyle(
-                    color = function.color?.colorResId?.let { colorResource(id = it) }
-                        ?: Color.Black,
+                    color = functionTextColor,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                 )
             )
             Icon(imageVector = ImageVector.vectorResource(id = R.drawable.ic_close_black_24dp),
                 contentDescription = stringResource(R.string.delete_function),
+                tint = MaterialTheme.colors.onSurface,
                 modifier = Modifier
                     .constrainAs(removeIcon) {
                         top.linkTo(functionTextZ.bottom, 6.dp)
@@ -197,6 +200,7 @@ private fun FunctionCardParametric(
             )
             Icon(imageVector = ImageVector.vectorResource(id = R.drawable.ic_edit_black_24dp),
                 contentDescription = stringResource(R.string.edit_function),
+                tint = MaterialTheme.colors.onSurface,
                 modifier = Modifier
                     .constrainAs(editIcon) {
                         top.linkTo(functionTextZ.bottom, 6.dp)
