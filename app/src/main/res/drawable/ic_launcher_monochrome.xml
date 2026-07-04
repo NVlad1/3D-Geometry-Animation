@@ -4,16 +4,10 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Device-safe Android 13+ monochrome icon.
-         White strokes disappear on device because the launcher tints the whole monochrome drawable.
-         Here the visible separators are transparent cutouts instead. -->
-
-    <!-- Sphere -->
     <path
         android:fillColor="#FF000000"
         android:pathData="M65.5,42.5m-16.5,0a16.5,16.5 0,1 1,33 0a16.5,16.5 0,1 1,-33 0" />
 
-    <!-- Cube -->
     <path
         android:fillColor="#FF000000"
         android:pathData="M20,38 L36,29 L52,38 L36,47 Z" />
@@ -26,7 +20,6 @@
         android:fillColor="#FF000000"
         android:pathData="M37.5,49.5 L52,41 L52,59 L37.5,67.5 Z" />
 
-    <!-- Cone outer shape -->
     <path
         android:fillColor="#FF000000"
         android:fillType="evenOdd"
