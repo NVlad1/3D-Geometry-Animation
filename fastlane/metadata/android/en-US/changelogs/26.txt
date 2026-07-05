@@ -1,0 +1,7 @@
+Changes since 1.4.1:
+
+- Added a Free graph screen orientation option
+- Added a reset button for animation time
+- Fixed function editor state after screen rotation
+- Added a monochrome launcher icon for themed Android icons
+- Updated target SDK to 37
