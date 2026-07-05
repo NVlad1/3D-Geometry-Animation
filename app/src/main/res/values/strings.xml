@@ -73,6 +73,7 @@ github.com/nvlad1
     <string name="function_fail_message">Result will not be saved</string>
     <string name="retry">Retry</string>
     <string name="time_eq">time =</string>
+    <string name="reset_animation_time">Reset animation time</string>
     <string name="choose_color">Choose color</string>
 
 </resources>
