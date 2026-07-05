@@ -27,8 +27,13 @@ class FunctionViewModelCompose @Inject constructor(
     val isCustomKeyboardEnabled: StateFlow<Boolean> = _isCustomKeyboardEnabled
 
     var functionId: String? = null
+    private var isFunctionLoaded = false
 
     fun loadFunction(id: String?) {
+        if (isFunctionLoaded && (id == null || id == functionId)) {
+            return
+        }
+
         this.functionId = id
         _functionModel.value = try {
             if (id == null) {
@@ -42,6 +47,7 @@ class FunctionViewModelCompose @Inject constructor(
             e.printStackTrace()
             FunctionModel("", functionRepository.unusedColor())
         }
+        isFunctionLoaded = true
     }
 
     fun setFunctionStr(str: String) {
