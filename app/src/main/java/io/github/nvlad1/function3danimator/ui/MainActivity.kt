@@ -145,6 +145,8 @@ class MainActivity : ComponentActivity() {
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             EnumMainActivityOrientation.landscape ->
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            EnumMainActivityOrientation.free ->
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
 
