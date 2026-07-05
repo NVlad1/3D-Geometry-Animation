@@ -40,7 +40,7 @@ class FunctionData internal constructor(
         xmax = func.xmax
         ymin = func.ymin
         ymax = func.ymax
-        currentTime = ((System.currentTimeMillis() - startTime).toFloat() * func.timeFactor)
+        currentTime = renderState.elapsedTimeMs().toFloat() * func.timeFactor
         if (func.type == FunctionDefinitionType.parametric){
             calcX = Calculator.Builder(func.strX!!, func.type).build()
             calcY = Calculator.Builder(func.strY!!, func.type).build()
@@ -115,10 +115,5 @@ class FunctionData internal constructor(
     companion object {
         var NumberOfDotsX = 50
         var NumberOfDotsY = 50
-        var startTime = System.currentTimeMillis()
-
-        fun resetTime(){
-            startTime = System.currentTimeMillis()
-        }
     }
 }

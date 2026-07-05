@@ -1,5 +1,6 @@
 package io.github.nvlad1.function3danimator.ui
 
+import android.os.SystemClock
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.nvlad1.function3danimator.database.FunctionRepository
 import io.github.nvlad1.function3danimator.model.DefaultFunctionSet
-import io.github.nvlad1.function3danimator.model.FunctionData
 import io.github.nvlad1.function3danimator.openGLutils.FunctionRenderState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,16 +27,25 @@ class MainViewModel @Inject constructor(
         private set
 
     private var timerJob: Job? = null
+    private val animationClock = PausableAnimationClock()
+    private var initialized = false
 
     fun onResume() {
         viewModelScope.launch(Dispatchers.Main) {
             functionRepository.initComplete.first { it }
             functionRepository.filterFunctions()
-            reset()
+            if (!initialized) {
+                animationClock.reset()
+                initialized = true
+            }
+            animationClock.resume()
+            refreshRenderState()
+            startTimer()
         }
     }
 
     fun onPause() {
+        animationClock.pause()
         stopTimer()
     }
 
@@ -45,19 +54,20 @@ class MainViewModel @Inject constructor(
         for (function in set.functionList) {
             functionRepository.addFunction(function.copy())
         }
-        reset()
+        animationClock.reset()
+        refreshRenderState()
+        startTimer()
     }
 
-    private fun reset() {
-        FunctionData.resetTime()
+    private fun refreshRenderState() {
         uiState = uiState.copy(
             renderState = FunctionRenderState(
                 functions = functionRepository.getFunctions(),
-                border = functionRepository.getBorder()
+                border = functionRepository.getBorder(),
+                elapsedTimeMs = animationClock::elapsedMs
             ),
             renderVersion = uiState.renderVersion + 1
         )
-        startTimer()
     }
 
     private fun startTimer() {
@@ -87,13 +97,60 @@ class MainViewModel @Inject constructor(
     }
 
     private fun buildTimerText(): String {
-        val time = (System.currentTimeMillis() - FunctionData.startTime).toFloat() / 1000f
+        val time = animationClock.elapsedMs().toFloat() / 1000f
         return "t = ${String.format(Locale.US, "%.1f", time)} s"
     }
 
     override fun onCleared() {
         stopTimer()
         super.onCleared()
+    }
+}
+
+private class PausableAnimationClock {
+    @Volatile
+    private var elapsedBeforePauseMs = 0L
+
+    @Volatile
+    private var runningStartedAtMs = 0L
+
+    @Volatile
+    private var running = false
+
+    @Synchronized
+    fun resume() {
+        if (running) return
+        runningStartedAtMs = SystemClock.elapsedRealtime()
+        running = true
+    }
+
+    @Synchronized
+    fun pause() {
+        if (!running) return
+        elapsedBeforePauseMs = elapsedMsLocked()
+        running = false
+    }
+
+    @Synchronized
+    fun reset() {
+        elapsedBeforePauseMs = 0L
+        if (running) {
+            runningStartedAtMs = SystemClock.elapsedRealtime()
+        }
+    }
+
+    fun elapsedMs(): Long {
+        return synchronized(this) {
+            elapsedMsLocked()
+        }
+    }
+
+    private fun elapsedMsLocked(): Long {
+        return if (running) {
+            elapsedBeforePauseMs + SystemClock.elapsedRealtime() - runningStartedAtMs
+        } else {
+            elapsedBeforePauseMs
+        }
     }
 }
 

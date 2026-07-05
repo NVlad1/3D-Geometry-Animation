@@ -4,7 +4,8 @@ import io.github.nvlad1.function3danimator.model.FunctionModel
 
 data class FunctionRenderState(
     val functions: List<FunctionModel>,
-    val border: Float
+    val border: Float,
+    val elapsedTimeMs: () -> Long
 ) {
     val functionsNumber: Int
         get() = functions.size
