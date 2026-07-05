@@ -106,6 +106,7 @@ class MainActivity : ComponentActivity() {
                     onOpenHelp = {
                         startActivity(Intent(this, HelpActivity::class.java))
                     },
+                    onResetAnimationTime = viewModel::resetAnimationTime,
                     createGlSurfaceView = { state ->
                         GLSurfaceViewWithRotation(
                             this,
@@ -161,6 +162,7 @@ private fun OpenGlSurfaceScreen(
     onOpenFunctionsList: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenHelp: () -> Unit,
+    onResetAnimationTime: () -> Unit,
     createGlSurfaceView: (io.github.nvlad1.function3danimator.openGLutils.FunctionRenderState) -> GLSurfaceViewWithRotation
 ) {
     var isDrawerOpen by remember { mutableStateOf(false) }
@@ -193,6 +195,7 @@ private fun OpenGlSurfaceScreen(
                 renderVersion = uiState.renderVersion,
                 showTimer = uiState.showTimer,
                 timerText = uiState.timerText,
+                onResetAnimationTime = onResetAnimationTime,
                 createGlSurfaceView = createGlSurfaceView
             )
         }
@@ -353,6 +356,7 @@ private fun MainContent(
     renderVersion: Int,
     showTimer: Boolean,
     timerText: String,
+    onResetAnimationTime: () -> Unit,
     createGlSurfaceView: (io.github.nvlad1.function3danimator.openGLutils.FunctionRenderState) -> GLSurfaceViewWithRotation
 ) {
     Box(
@@ -369,15 +373,25 @@ private fun MainContent(
             }
         }
         if (showTimer) {
-            Text(
-                text = timerText,
+            Row(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(16.dp),
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Normal
-            )
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = timerText,
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Normal
+                )
+                IconButton(onClick = onResetAnimationTime) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_reset_time_white_24dp),
+                        contentDescription = stringResource(R.string.reset_animation_time)
+                    )
+                }
+            }
         }
     }
 }
