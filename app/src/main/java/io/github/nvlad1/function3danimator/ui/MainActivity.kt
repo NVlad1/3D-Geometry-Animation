@@ -388,7 +388,8 @@ private fun MainContent(
                 IconButton(onClick = onResetAnimationTime) {
                     Icon(
                         painter = painterResource(R.drawable.ic_reset_time_white_24dp),
-                        contentDescription = stringResource(R.string.reset_animation_time)
+                        contentDescription = stringResource(R.string.reset_animation_time),
+                        tint = Color.White
                     )
                 }
             }
