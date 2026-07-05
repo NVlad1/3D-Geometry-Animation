@@ -35,7 +35,7 @@ android {
     defaultConfig {
         applicationId = "io.github.nvlad1.function3danimator"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 26
         versionName = "1.5.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
