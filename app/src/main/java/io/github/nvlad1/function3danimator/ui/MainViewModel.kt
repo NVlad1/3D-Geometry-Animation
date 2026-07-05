@@ -59,6 +59,11 @@ class MainViewModel @Inject constructor(
         startTimer()
     }
 
+    fun resetAnimationTime() {
+        animationClock.reset()
+        uiState = uiState.copy(timerText = buildTimerText())
+    }
+
     private fun refreshRenderState() {
         uiState = uiState.copy(
             renderState = FunctionRenderState(

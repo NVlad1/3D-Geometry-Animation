@@ -1,6 +1,5 @@
 package io.github.nvlad1.function3danimator.ui.function_screen
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import io.github.nvlad1.function3danimator.R
 import io.github.nvlad1.function3danimator.databinding.BasicComposeActivityBinding
 import io.github.nvlad1.function3danimator.database.FunctionRepository
 import io.github.nvlad1.function3danimator.model.FunctionModel
@@ -32,9 +30,6 @@ class FunctionActivityCompose : AppCompatActivity() {
         binding = BasicComposeActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if (!resources.getBoolean(R.bool.isTablet)) {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
         initFunction()
         enableEdgeToEdge()
         setContent {
