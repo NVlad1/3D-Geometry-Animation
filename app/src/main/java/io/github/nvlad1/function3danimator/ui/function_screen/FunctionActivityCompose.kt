@@ -32,9 +32,6 @@ class FunctionActivityCompose : AppCompatActivity() {
         binding = BasicComposeActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if (!resources.getBoolean(R.bool.isTablet)) {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
         initFunction()
         enableEdgeToEdge()
         setContent {
