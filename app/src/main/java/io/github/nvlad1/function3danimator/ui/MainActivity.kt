@@ -381,6 +381,7 @@ private fun MainContent(
             ) {
                 Text(
                     text = timerText,
+                    modifier = Modifier.width(144.dp),
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Normal
